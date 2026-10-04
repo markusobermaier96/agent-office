@@ -1,4 +1,6 @@
-# Packaging the desktop app (see docs/desktop.md). Run it with `npm run dist:win`.
+# Packaging the desktop app (see docs/desktop.md). Run it with `npm run dist:win` for the installer
+# and the portable zip, or `npm run dist:win:zip` for the portable zip alone — that one cross-builds
+# on Ubuntu without Wine.
 appId: com.agentsystemlabs.agentoffice
 productName: Agent Office
 copyright: Copyright © AgentSystemLabs

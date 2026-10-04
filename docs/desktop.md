@@ -39,23 +39,33 @@ npm run desktop      # builds the client and server, then opens the Electron win
 `npm run desktop` is the fastest loop while working on the app: it builds and starts the window
 against your checkout, with the office's console output in the terminal.
 
-## Build the Windows installer
+## Build the Windows package
 
 ```bash
-npm run dist:win
+npm run dist:win       # installer and portable zip
+npm run dist:win:zip   # portable zip only
 ```
 
-That builds the client and server and runs `electron-builder` ([electron-builder.yml](../electron-builder.yml)),
-which writes to `release/`:
+Both build the client and server and run `electron-builder`
+([electron-builder.yml](../electron-builder.yml)), which writes to `release/`:
 
 - `Agent-Office-<version>-win-x64.exe` — the installer (per-user, so no administrator prompt; it can
   choose its folder, and makes Start-menu and desktop shortcuts).
 - `Agent-Office-<version>-win-x64.zip` — the same app unpacked, to run without installing.
 
-Build on Windows. `node-pty` installs a prebuilt binary per platform, so a Windows package needs the
-Windows one, and `electron-builder`'s Windows targets want a Windows runner. The `desktop` workflow
-does exactly this on GitHub's `windows-latest` and uploads `release/*.exe` and `release/*.zip` as an
-artifact; `npm run dist:win` does the same on your own Windows machine.
+Build on Windows, or cross-build on Ubuntu. Two things differ off Windows, and the scripts handle
+the first one for you:
+
+- **The Windows `node-pty` binary.** npm installs a prebuilt binary per platform, and the app needs
+  the Windows one. When the host is not Windows, `dist:win` fetches it first (`desktop/win-pty.mjs`,
+  at the version `@lydell/node-pty` asks for) and puts it beside the host's own. On Windows it is
+  already there.
+- **The installer.** `electron-builder` builds the NSIS installer by running it under Wine to
+  produce the uninstaller. That is native on Windows; on Ubuntu it needs Wine and a display.
+  `npm run dist:win:zip` skips the installer and builds the portable zip alone, which needs neither.
+
+The `desktop` workflow builds natively on GitHub's `windows-latest` and uploads `release/*.exe` and
+`release/*.zip` as an artifact.
 
 ## What the app does when it starts
 

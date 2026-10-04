@@ -26,7 +26,8 @@
     "start": "node bin/agent-office.js",
     "desktop": "npm run build && electron .",
     "desktop:host": "node dist/server/server/desktop/index.js",
-    "dist:win": "npm run build && electron-builder --win --x64",
+    "dist:win": "npm run build && node desktop/win-pty.mjs && electron-builder --win --x64",
+    "dist:win:zip": "npm run build && node desktop/win-pty.mjs && electron-builder --win zip --x64",
     "prepare": "npm run build"
   },
   "engines": {

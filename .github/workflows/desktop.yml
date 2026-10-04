@@ -1,9 +1,9 @@
 name: Desktop app
 
-# Builds the Windows desktop app (the Electron window around the office). It gets its own workflow
-# because it must package on Windows: node-pty installs a prebuilt binary per platform, and
-# electron-builder's Windows targets want a Windows runner. The artifacts are the installer and the
-# portable zip from electron-builder.yml. See docs/desktop.md.
+# Builds the Windows desktop app (the Electron window around the office). It keeps its own workflow
+# and a Windows runner so the installer and the portable zip are built natively; on Ubuntu,
+# `npm run dist:win:zip` cross-builds the portable zip without Wine (see docs/desktop.md). The
+# artifacts are the installer and the portable zip from electron-builder.yml.
 
 on:
   workflow_dispatch:

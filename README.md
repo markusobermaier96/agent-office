@@ -114,7 +114,9 @@ npm run dist:win
 
 That writes `release/Agent-Office-<version>-win-x64.exe` (an installer that makes Start-menu and
 desktop shortcuts) and a portable `.zip`, or the same is built for you by the
-[`desktop` workflow](.github/workflows/desktop.yml) and uploaded as an artifact. From a checkout,
+[`desktop` workflow](.github/workflows/desktop.yml) and uploaded as an artifact. It builds on Windows,
+and on Ubuntu too: `npm run dist:win:zip` makes the portable `.zip` (no Wine needed — it fetches the
+Windows `node-pty` binary for you), while the installer wants Windows or Wine. From a checkout,
 `npm run desktop` builds and opens the window without packaging anything.
 
 The app is the same office, on the same `~/agent-office` data as the `agent-office` command, so
