@@ -1,0 +1,64 @@
+name: Desktop app
+
+# Builds the Windows desktop app (the Electron window around the office). It keeps its own workflow
+# and a Windows runner so the installer and the portable zip are built natively; on Ubuntu,
+# `npm run dist:win:zip` cross-builds the portable zip without Wine (see docs/desktop.md). The
+# artifacts are the installer and the portable zip from electron-builder.yml.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'desktop/**'
+      - 'electron-builder.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+      - '.github/workflows/desktop.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'desktop/**'
+      - 'electron-builder.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+      - '.github/workflows/desktop.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install and build
+        run: npm ci # its prepare script builds the client and the server
+
+      - run: npm run typecheck
+
+      - name: Package the desktop app
+        run: npm run dist:win
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-office-windows
+          path: |
+            release/*.exe
+            release/*.zip
+          if-no-files-found: error

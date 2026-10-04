@@ -2,7 +2,9 @@
   "name": "agent-office",
   "version": "0.1.0",
   "description": "A cartoon 3D multiplayer office where your team spawns Claude Code workers at desks, shares live terminals, talks over voice, and tracks GitHub issues and PRs.",
+  "author": "AgentSystemLabs",
   "type": "module",
+  "main": "desktop/main.cjs",
   "bin": {
     "agent-office": "bin/agent-office.js"
   },
@@ -11,6 +13,7 @@
   },
   "files": [
     "bin",
+    "desktop",
     "dist"
   ],
   "scripts": {
@@ -21,6 +24,10 @@
     "build:server": "tsc -p tsconfig.server.json",
     "typecheck": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.client.json --noEmit",
     "start": "node bin/agent-office.js",
+    "desktop": "npm run build && electron .",
+    "desktop:host": "node dist/server/server/desktop/index.js",
+    "dist:win": "npm run build && node desktop/win-pty.mjs && electron-builder --win --x64",
+    "dist:win:zip": "npm run build && node desktop/win-pty.mjs && electron-builder --win zip --x64",
     "prepare": "npm run build"
   },
   "engines": {
@@ -46,6 +53,8 @@
     "@xterm/xterm": "^6.0.0",
     "concurrently": "^10.0.5",
     "dompurify": "^3.4.16",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
     "marked": "^18.0.14",
     "playwright-core": "^1.63.0",
     "react": "^18.3.1",

@@ -1,0 +1,31 @@
+# Packaging the desktop app (see docs/desktop.md). Run it with `npm run dist:win` for the installer
+# and the portable zip, or `npm run dist:win:zip` for the portable zip alone — that one cross-builds
+# on Ubuntu without Wine.
+appId: com.agentsystemlabs.agentoffice
+productName: Agent Office
+copyright: Copyright © AgentSystemLabs
+# The office runs on a Node process that reads dist/ and node_modules/ straight from disk, so nothing
+# may be packed into an asar archive: the child process could not read its own files.
+asar: false
+# node-pty ships N-API prebuilds, which work on Electron exactly as they do on Node: don't rebuild.
+npmRebuild: false
+directories:
+  output: release
+files:
+  - package.json
+  - bin/**
+  - dist/**
+  - desktop/main.cjs
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+  artifactName: Agent-Office-${version}-win-${arch}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
