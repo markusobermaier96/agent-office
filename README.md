@@ -20,7 +20,7 @@ and jump into any of them together. Every GitHub repo is a floor of the building
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?style=flat-square)](#run-locally)
 [![Built with TypeScript](https://img.shields.io/badge/built%20with-TypeScript-3178c6?style=flat-square)](https://www.typescriptlang.org)
 
-[**Run locally**](#run-locally) · [**Deploy to AWS**](#deploy-to-aws-ec2) · [**Azure**](#deploy-to-azure) · [**Railway**](#deploy-to-railway) · [**Fly.io**](#deploy-to-flyio) · [**Dokploy**](#deploy-to-dokploy) · [**Coolify**](#deploy-to-coolify) · [**Any server**](#deploy-to-any-ubuntu-or-debian-server) · [**Add users**](#add-users) · [**Controls**](#controls) · [**Features**](docs/features.md) · [**How it works**](docs/how-it-works.md)
+[**Run locally**](#run-locally) · [**Windows desktop app**](#windows-desktop-app) · [**Deploy to AWS**](#deploy-to-aws-ec2) · [**Azure**](#deploy-to-azure) · [**Railway**](#deploy-to-railway) · [**Fly.io**](#deploy-to-flyio) · [**Dokploy**](#deploy-to-dokploy) · [**Coolify**](#deploy-to-coolify) · [**Any server**](#deploy-to-any-ubuntu-or-debian-server) · [**Add users**](#add-users) · [**Controls**](#controls) · [**Features**](docs/features.md) · [**How it works**](docs/how-it-works.md)
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/AgentSystemLabs/agent-office/main/install.sh | bash
@@ -102,6 +102,26 @@ agent-office
 ```
 
 > Only your computer can reach the office: it listens on `127.0.0.1`. `--host 0.0.0.0` lets your network in, but over plain http, where voice and screen sharing don't work. To share the office with a team, put it on a server: [AWS](#deploy-to-aws-ec2), [Azure](#deploy-to-azure), [Railway](#deploy-to-railway), [Fly.io](#deploy-to-flyio), [Dokploy](#deploy-to-dokploy), [Coolify](#deploy-to-coolify) or [any Ubuntu or Debian machine](#deploy-to-any-ubuntu-or-debian-server).
+
+## Windows desktop app
+
+Run the office in a window of its own instead of a terminal and a browser tab, and build it into a
+Windows installer:
+
+```powershell
+npm run dist:win
+```
+
+That writes `release/Agent-Office-<version>-win-x64.exe` (an installer that makes Start-menu and
+desktop shortcuts) and a portable `.zip`, or the same is built for you by the
+[`desktop` workflow](.github/workflows/desktop.yml) and uploaded as an artifact. From a checkout,
+`npm run desktop` builds and opens the window without packaging anything.
+
+The app is the same office, on the same `~/agent-office` data as the `agent-office` command, so
+projects, workers and sign-ins are shared. It starts the server as a child process on Node (the
+Electron binary under `ELECTRON_RUN_AS_NODE`), so agent hooks, the MCP server and the terminal host
+all keep working, and it still needs Node.js 20+, an agent CLI, git and the GitHub CLI. Everything
+is in [docs/desktop.md](docs/desktop.md).
 
 ## Deploy to AWS (EC2)
 
@@ -394,6 +414,9 @@ npm test
 
 Server edits restart the server, not the workers. After changing `ptyhost.ts`, bump `PTY_PROTOCOL` in `ptys.ts` so the next server replaces the PTY host.
 
+`npm run desktop` builds the client and server and opens the [Windows desktop app](docs/desktop.md)
+in a window against the checkout; `npm run dist:win` packages it with electron-builder.
+
 [docs/code-layout.md](docs/code-layout.md) says where the code lives, and where a new feature's pieces go.
 
 The rules for coding agents working on this repository are in [`AGENTS.md`](AGENTS.md), which Codex, OpenCode and most other agent CLIs read. `CLAUDE.md` only imports it for Claude Code, so new rules go in `AGENTS.md`.
@@ -413,6 +436,7 @@ Every change to the app that lands on `main` is published as a GitHub release by
 - [Dokploy reference](docs/dokploy.md): what `deploy/dokploy.sh` sets up on your Dokploy, and what the volume keeps
 - [Coolify reference](docs/coolify.md): what `deploy/coolify.sh` sets up on your Coolify, building pushed commits, and what the volume keeps
 - [Your own server](docs/self-hosting.md): the one-line setup for any Ubuntu or Debian server, or by hand behind Caddy or nginx
+- [Windows desktop app](docs/desktop.md): the Electron window around the office, and building the Windows installer
 - [Azure reference](docs/azure.md): picking a VM size, pausing, and everything `deploy/azure.sh` does
 - [How it works](docs/how-it-works.md): the architecture, and security notes
 - [Code layout](docs/code-layout.md): where the code lives, adding a feature or an agent provider, and the size guard

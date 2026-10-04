@@ -43,6 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # The Linux release never runs the desktop app; skip Electron's binary download (the desktop
+    # workflow installs it on Windows; see docs/desktop.md).
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
     steps:
       - uses: actions/checkout@v7
         with:
